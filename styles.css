@@ -1,0 +1,54 @@
+
+body {
+  font-family: RobotoDraft, sans-serif;
+  color: #333;
+  margin: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-touch-callout: none;
+}
+
+html, body {
+  margin: 0; padding: 0; width: 100%; height: 100%;
+}
+
+bookie-book > * {
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+bookie-book > .fullpage {
+  position: relative;
+  -ms-flex: 1 1 0.000000001px;
+  -webkit-flex: 1;
+  flex: 1;
+  -webkit-flex-basis: 0.000000001px;
+  flex-basis: 0.000000001px;
+  
+  page-break-after: always;
+  page-break-before: always;
+}
+
+bookie-book > h1 + .fullpage {
+  page-break-before: avoid;
+}
+
+bookie-book > .fullpage > img {
+  position: absolute;
+  max-width: 100%;
+  max-height: 100%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+bookie-book > h1 > strong {
+  display: block;
+  font-size: 0.7em;
+  line-height: 2.2em;
+}

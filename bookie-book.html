@@ -1,0 +1,88 @@
+<link rel="import" href="bower_components/polymer/polymer.html"> 
+
+<polymer-element name="bookie-book">
+<template>
+
+  <link rel="stylesheet" href="bookie-book.css">
+  
+  <div id="book" center-justified horizontal layout style="height: 100%">
+  
+    <div class="page" id="left" flex none style="width: 700px" layout vertical>
+      <content select="[data-page='left']" />
+    </div>
+    <div class="page" id="right" flex none style="width: 700px" layout vertical>
+      <content select="[data-page='right']" />
+    </div>
+  </div>
+  
+</template>
+<script>
+(function(Polymer) {
+  
+  function empty(node) {
+    while (node.firstChild) {
+      node.removeChild(node.firstChild);
+    }
+  }
+  
+  function clearNonElements(node) {
+    for (var i = 0; i < node.childNodes.length; i++) {
+      if(node.childNodes[i].nodeType !== 1) {
+        node.removeChild(node.childNodes[i--]);
+      }
+    }
+  }
+  
+  function clearPages(nodes) {
+    for (var i = 0, l = nodes.length; i < l; i++) {
+      nodes[i].removeAttribute('data-page');
+    }
+  }
+  
+  var nonNum = /\D/;
+  function getPixels(pxString) {
+    if (!pxString) {
+      return 0;
+    }
+    
+    pxString = pxString.replace(/px$/, '');
+    if (nonNum.test(pxString)) {
+      throw new Error('string is not a pixel value string');
+    }
+    
+    return parseInt(pxString, 10);
+  }
+  
+  Polymer('bookie-book', {
+    
+    ready: function() {
+      this._page();
+      this.onMutation(this, this._childrenUpdated);
+    },
+    
+    _childrenUpdated: function() {
+      this._page();
+      this.onMutation(this, this._childrenUpdated);
+    },
+    
+    _page: function() {
+      var pageStyle = getComputedStyle(this.$.left);
+      var margin = getPixels(pageStyle.marginTop) + getPixels(pageStyle.marginBottom);
+      var border = getPixels(pageStyle.borderTopWidth) + getPixels(pageStyle.borderBottomWidth);
+      var pageHeight = this.$.left.clientHeight + margin + border;
+      
+      console.log('pageHeight: %dpx', pageHeight);
+      var pages = [];
+      var page = [];
+      clearNonElements(this);
+      //clearPages(this.childNodes);
+      for (var i = 0, l = this.childNodes.length; i < l; i++) {
+        var node = this.childNodes[i];
+        
+      }
+    }
+    
+  });
+})(Polymer);
+</script>
+</polymer-element>
