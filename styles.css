@@ -47,6 +47,10 @@ bookie-book > .fullpage > img {
   margin-right: auto;
 }
 
+bookie-book > h1 {
+  page-break-before: left;
+}
+
 bookie-book > h1 > strong {
   display: block;
   font-size: 0.7em;

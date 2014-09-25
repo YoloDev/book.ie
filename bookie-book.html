@@ -139,12 +139,12 @@
     },
     
     _nextPage: function() {
-      ++this._currentPage;
+      this._currentPage += 2;
       this._render();
     },
     
     _prevPage: function() {
-      --this._currentPage;
+      this._currentPage -= 2;
       this._render();
     },
     
