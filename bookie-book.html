@@ -7,12 +7,15 @@
   
   <div id="book" center-justified horizontal layout style="height: 100%">
   
+    <div on-click="{{_prevPage}}">Prev</div>
     <div class="page" id="left" flex none style="width: 700px" layout vertical>
       <content select="[data-page='left']" />
     </div>
     <div class="page" id="right" flex none style="width: 700px" layout vertical>
       <content select="[data-page='right']" />
     </div>
+    <div on-click="{{_nextPage}}">Next</div>
+    
   </div>
   
 </template>
@@ -130,12 +133,34 @@
       clearPages(page);
       pages.push(page);
       
-      for(var i = 0, l = pages[0].length; i < l; i++) {
-        pages[0][i].setAttribute('data-page', 'left');
+      this._pages = pages;
+      this._currentPage = 0;
+      this._render();
+    },
+    
+    _nextPage: function() {
+      ++this._currentPage;
+      this._render();
+    },
+    
+    _prevPage: function() {
+      --this._currentPage;
+      this._render();
+    },
+    
+    _render: function() {
+      var pages = this._pages;
+      var cur = this._currentPage;
+      clearPages(this.childNodes);
+      
+      for (var i = 0, l = pages[cur].length; i < l; i++) {
+        pages[cur][i].setAttribute('data-page', 'left');
       }
       
-      for(var i = 0, l = pages[1].length; i < l; i++) {
-        pages[1][i].setAttribute('data-page', 'right');
+      if (pages[cur + 1]) {
+        for (var i = 0, l = pages[cur + 1].length; i < l; i++) {
+          pages[cur + 1][i].setAttribute('data-page', 'right');
+        }
       }
     }
     
