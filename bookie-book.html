@@ -74,11 +74,68 @@
       console.log('pageHeight: %dpx', pageHeight);
       var pages = [];
       var page = [];
+      var isLeftPage = true;
       clearNonElements(this);
-      //clearPages(this.childNodes);
+      clearPages(this.childNodes);
+      
+      function empty() {
+        return page.length === 0;
+      }
+      
+      function nextPage() {
+        clearPages(page);
+        pages.push(page);
+        page = [];
+        isLeftPage = !isLeftPage;
+      }
+      
       for (var i = 0, l = this.childNodes.length; i < l; i++) {
         var node = this.childNodes[i];
+        var style = getComputedStyle(node);
+        if (style.pageBreakBefore === 'always') {
+          if (!empty()) {
+            nextPage();
+          }
+        } else if (style.pageBreakBefore === 'left') {
+          if (!empty()) {
+            nextPage();
+          }
+          if (!isLeftPage) {
+            nextPage();
+          }
+        } else if (style.pageBreakBefore === 'right') {
+          if (!empty()) {
+            nextPage();
+          }
+          if (isLeftPage) {
+            nextPage();
+          }
+        }
         
+        node.setAttribute('data-page', 'left');
+        // TODO: Flexing elemens shrinks, so this caclulation
+        // need to account for that.
+        if (node.offsetTop + node.clientHeight > pageHeight &&
+            style.pageBrakeBefore !== 'avoid') {
+          nextPage();
+        }
+        
+        page.push(node);
+        
+        if (style.pageBreakAfter === 'always') {
+          nextPage();
+        }
+      }
+      
+      clearPages(page);
+      pages.push(page);
+      
+      for(var i = 0, l = pages[0].length; i < l; i++) {
+        pages[0][i].setAttribute('data-page', 'left');
+      }
+      
+      for(var i = 0, l = pages[1].length; i < l; i++) {
+        pages[1][i].setAttribute('data-page', 'right');
       }
     }
     
