@@ -1,3 +1,4 @@
 book.ie
 =======
-YOLO! DO A README!
+
+Ebook like reader for the web.
