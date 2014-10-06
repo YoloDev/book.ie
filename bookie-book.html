@@ -1,12 +1,12 @@
-<link rel="import" href="bower_components/polymer/polymer.html"> 
+<link rel="import" href="bower_components/polymer/polymer.html">
 
 <polymer-element name="bookie-book">
 <template>
 
   <link rel="stylesheet" href="bookie-book.css">
-  
+
   <div id="book" center-justified horizontal layout style="height: 100%">
-  
+
     <div on-click="{{_prevPage}}">Prev</div>
     <div class="page" id="left" flex none style="width: 700px" layout vertical>
       <content select="[data-page='left']" />
@@ -15,19 +15,19 @@
       <content select="[data-page='right']" />
     </div>
     <div on-click="{{_nextPage}}">Next</div>
-    
+
   </div>
-  
+
 </template>
 <script>
 (function(Polymer) {
-  
+
   function empty(node) {
     while (node.firstChild) {
       node.removeChild(node.firstChild);
     }
   }
-  
+
   function clearNonElements(node) {
     for (var i = 0; i < node.childNodes.length; i++) {
       if(node.childNodes[i].nodeType !== 1) {
@@ -35,63 +35,64 @@
       }
     }
   }
-  
+
   function clearPages(nodes) {
     for (var i = 0, l = nodes.length; i < l; i++) {
       nodes[i].removeAttribute('data-page');
     }
   }
-  
+
   var nonNum = /\D/;
   function getPixels(pxString) {
     if (!pxString) {
       return 0;
     }
-    
+
     pxString = pxString.replace(/px$/, '');
     if (nonNum.test(pxString)) {
+      debugger;
       throw new Error('string is not a pixel value string');
     }
-    
+
     return parseInt(pxString, 10);
   }
-  
+
   Polymer('bookie-book', {
-    
+
     ready: function() {
       this._page();
       this.onMutation(this, this._childrenUpdated);
     },
-    
+
     _childrenUpdated: function() {
       this._page();
       this.onMutation(this, this._childrenUpdated);
     },
-    
+
     _page: function() {
       var pageStyle = getComputedStyle(this.$.left);
       var margin = getPixels(pageStyle.marginTop) + getPixels(pageStyle.marginBottom);
       var border = getPixels(pageStyle.borderTopWidth) + getPixels(pageStyle.borderBottomWidth);
       var pageHeight = this.$.left.clientHeight + margin + border;
-      
+
       console.log('pageHeight: %dpx', pageHeight);
       var pages = [];
       var page = [];
       var isLeftPage = true;
       clearNonElements(this);
       clearPages(this.childNodes);
-      
+
       function empty() {
         return page.length === 0;
       }
-      
+
       function nextPage() {
         clearPages(page);
         pages.push(page);
         page = [];
         isLeftPage = !isLeftPage;
       }
-      
+
       for (var i = 0, l = this.childNodes.length; i < l; i++) {
         var node = this.childNodes[i];
         var style = getComputedStyle(node);
@@ -114,7 +115,7 @@
             nextPage();
           }
         }
-        
+
         node.setAttribute('data-page', 'left');
         // TODO: Flexing elemens shrinks, so this caclulation
         // need to account for that.
@@ -122,48 +123,48 @@
             style.pageBrakeBefore !== 'avoid') {
           nextPage();
         }
-        
+
         page.push(node);
-        
+
         if (style.pageBreakAfter === 'always') {
           nextPage();
         }
       }
-      
+
       clearPages(page);
       pages.push(page);
-      
+
       this._pages = pages;
       this._currentPage = 0;
       this._render();
     },
-    
+
     _nextPage: function() {
       this._currentPage += 2;
       this._render();
     },
-    
+
     _prevPage: function() {
       this._currentPage -= 2;
       this._render();
     },
-    
+
     _render: function() {
       var pages = this._pages;
       var cur = this._currentPage;
       clearPages(this.childNodes);
-      
+
       for (var i = 0, l = pages[cur].length; i < l; i++) {
         pages[cur][i].setAttribute('data-page', 'left');
       }
-      
+
       if (pages[cur + 1]) {
         for (var i = 0, l = pages[cur + 1].length; i < l; i++) {
           pages[cur + 1][i].setAttribute('data-page', 'right');
         }
       }
     }
-    
+
   });
 })(Polymer);
 </script>
